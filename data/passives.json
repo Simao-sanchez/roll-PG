@@ -1,0 +1,17 @@
+{
+	"lucky_charm": {
+		"name": "Porte-bonheur",
+		"description": "Augmente les chances d'obtenir un symbole rare.",
+		"effect_type": "rarity_boost",
+		"value": 10,
+		"sprite": "res://assets/passives/lucky_charm.png"
+	},
+
+	"iron_skin": {
+		"name": "Peau de fer",
+		"description": "Réduit les dégâts reçus.",
+		"effect_type": "damage_reduction",
+		"value": 2,
+		"sprite": "res://assets/passives/iron_skin.png"
+	}
+}

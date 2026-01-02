@@ -3,6 +3,8 @@ extends Node2D
 @onready var grid_container = $Container
 @onready var inventory_panel = $InventoryPanel
 
+var SymbolScene = preload("res://scenes/symbols/Symbol.tscn")
+
 var backpack = []
 var spin_duration = 2.0
 var spin_speed = 0.05
@@ -35,18 +37,8 @@ var textures_ennemies = [
 ]
 
 var enemy = {}
-
-# Chargement des scènes d'objets
-var epee_scene = preload("res://Items/epee.tscn")
-var bouclier_scene = preload("res://Items/bouclier.tscn")
-var potion_scene = preload("res://Items/potion.tscn")
-var arc_scene = preload("res://Items/arc.tscn")
-var fleche_scene = preload("res://Items/fleche.tscn")
-var pomme_scene = preload("res://Items/Pomme.tscn")
-var danse_lame_scene = preload("res://Items/DanseLame.tscn")
-var key_scene = preload("res://Items/Key.tscn")
-var coffre_scene = preload("res://Items/coffre.tscn")
-var gemme_verte_scene = preload("res://Items/gemme_verte.tscn")
+# Nouveau système : les objets sont identifiés par des IDs JSON
+# Exemple : "sword", "shield", "arrow", etc.
 
 var viande_scene = preload("res://passifs/viande.tscn")
 var oeuf_scene = preload("res://passifs/oeuf.tscn")
@@ -97,15 +89,16 @@ var tooltip_delay := 1.0
 
 func _ready():
 	randomize()
-	for i in range(13):
-		backpack.append(epee_scene)
-	for i in range(12):
-		backpack.append(bouclier_scene)
-	for i in range(5):
-		backpack.append(fleche_scene)
-	for i in range(2):
-		backpack.append(key_scene)
-		backpack.append(coffre_scene)
+for i in range(13):
+	backpack.append("sword")
+for i in range(12):
+	backpack.append("shield")
+for i in range(5):
+	backpack.append("arrow")
+for i in range(2):
+	backpack.append("key")
+	backpack.append("chest")
+
 
 	pouvoir_boutons = [$Pouvoir1, $Pouvoir2, $Pouvoir3, $Pouvoir4]
 
@@ -209,7 +202,7 @@ func _ready():
 
 func _on_spin_button_pressed():
 	if choix_en_cours:
-		return  # Bloque le spin pendant les choix
+		return
 	apply_pending_enemy_damage_to_player()
 	$SpinButton.disabled = true
 	items.clear()
@@ -217,7 +210,7 @@ func _on_spin_button_pressed():
 	
 	for i in range(25):
 		var index = randi() % temp_backpack.size()
-		items.append(temp_backpack[index])
+		items.append(temp_backpack[index])   # ← maintenant ce sont des String (IDs)
 		temp_backpack.remove_at(index)
 	
 	texture_rects = grid_container.get_children()
@@ -230,68 +223,59 @@ func _on_spin_button_pressed():
 		$CombatPanel/SpritesContainer/PlayerSprite.play("attack")
 		$CombatPanel/SpritesContainer/PlayerSprite.animation_finished.connect(_on_player_attack_finished, CONNECT_ONE_SHOT)
 
-# Toutes les colonnes tournent en même temps, mais s'arrêtent une par une de gauche à droite.
+
 func spin_reels_column_by_column() -> void:
 	var columns = 5
 	var rows = 5
 	var total_cols = columns
 
-	# temps total pour le spin
 	var total_time = spin_duration
-	# temps entre les arrêts de colonnes (gauche -> droite)
 	var col_interval = total_time / float(total_cols)
-
 	var elapsed = 0.0
 
 	while elapsed < total_time:
-		# Détermine pour chaque colonne si elle tourne encore
 		for col in range(columns):
 			var col_stop_time = col * col_interval
 			var col_end_time = col_stop_time + col_interval
-			# Si on est avant le moment où cette colonne doit s'arrêter, elle tourne
+
 			if elapsed < col_end_time:
+				# Colonne encore en mouvement → tirage aléatoire visuel
 				for row in range(rows):
 					var idx = col + row * columns
 					if idx >= 0 and idx < texture_rects.size():
 						var texture_rect = texture_rects[idx]
-						var random_item = backpack[randi() % backpack.size()]
-						if random_item is PackedScene:
-							var instance = random_item.instantiate()
-							if instance.has_node("Sprite2D"):
-								texture_rect.texture = instance.get_node("Sprite2D").texture
-							instance.queue_free()
-						else:
-							texture_rect.texture = random_item
-			# Sinon, cette colonne est arrêtée : on affiche le résultat final si ce n'est pas déjà fait
+						# On pioche un ID dans le backpack
+						var symbol_id = backpack[randi() % backpack.size()]
+						# On instancie un symbole temporaire
+						var symbol = SymbolScene.instantiate()
+						symbol.setup(symbol_id)
+						texture_rect.texture = symbol.get_texture()
+						symbol.queue_free()
 			else:
+				# Colonne arrêtée → affichage du résultat final (items)
 				for row in range(rows):
 					var idx_final = col + row * columns
 					if idx_final < items.size() and idx_final < texture_rects.size():
 						var texture_rect_final = texture_rects[idx_final]
-						var item = items[idx_final]
-						if item is PackedScene:
-							var instance_final = item.instantiate()
-							if instance_final.has_node("Sprite2D"):
-								texture_rect_final.texture = instance_final.get_node("Sprite2D").texture
-							instance_final.queue_free()
-						else:
-							texture_rect_final.texture = item
+						var symbol_id_final = items[idx_final]
+						var symbol_final = SymbolScene.instantiate()
+						symbol_final.setup(symbol_id_final)
+						texture_rect_final.texture = symbol_final.get_texture()
+						symbol_final.queue_free()
 
 		var t = get_tree().create_timer(spin_speed)
 		await t.timeout
 		elapsed += spin_speed
 
-	# Sécurité : à la fin, on force les résultats finaux partout
+	# Sécurité : forcer les résultats finaux partout
 	for i in range(min(texture_rects.size(), items.size())):
 		var texture_rect_final2 = texture_rects[i]
-		var item2 = items[i]
-		if item2 is PackedScene:
-			var instance_final2 = item2.instantiate()
-			if instance_final2.has_node("Sprite2D"):
-				texture_rect_final2.texture = instance_final2.get_node("Sprite2D").texture
-			instance_final2.queue_free()
-		else:
-			texture_rect_final2.texture = item2
+		var symbol_id2 = items[i]
+		var symbol2 = SymbolScene.instantiate()
+		symbol2.setup(symbol_id2)
+		texture_rect_final2.texture = symbol2.get_texture()
+		symbol2.queue_free()
+
 
 # Ancienne fonction (non utilisée par le spin principal)
 func AnimateTextureRect(texture_rect, item):
@@ -802,18 +786,20 @@ func update_slot_texture(index: int) -> void:
 	if index < 0 or index >= texture_rects.size():
 		return
 	var texture_rect = texture_rects[index]
-	var item = items[index]
-	if item == null:
+	if index >= items.size():
 		texture_rect.texture = null
 		return
-	
-	if item is PackedScene:
-		var instance = item.instantiate()
-		if instance.has_node("Sprite2D"):
-			texture_rect.texture = instance.get_node("Sprite2D").texture
-		instance.queue_free()
-	else:
-		texture_rect.texture = item
+
+	var symbol_id = items[index]
+	if symbol_id == null:
+		texture_rect.texture = null
+		return
+
+	var symbol = SymbolScene.instantiate()
+	symbol.setup(symbol_id)
+	texture_rect.texture = symbol.get_texture()
+	symbol.queue_free()
+
 
 # Vérifie la disponibilité des pouvoirs
 func check_pouvoir_cooldown():

@@ -1,0 +1,19 @@
+{
+	"sword": {
+		"name": "Épée",
+		"type": "attack",
+		"value": 5,
+		"rarity": "common",
+		"effects": ["double_if_pair"],
+		"sprite": "res://assets/powers/sword.png"
+	},
+
+	"shield": {
+		"name": "Bouclier",
+		"type": "defense",
+		"value": 3,
+		"rarity": "common",
+		"effects": [],
+		"sprite": "res://assets/powers/shield.png"
+	}
+}
