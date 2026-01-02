@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://dteqkye032dpq"]
+
+[ext_resource type="Script" uid="uid://chvslmusiiitx" path="res://assets/passives/Passifs/viande.gd" id="1_0ycm4"]
+[ext_resource type="Texture2D" uid="uid://g1am2vas04ht" path="res://assets/passives/sprite_passifs/viande.png" id="2_lj0mh"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_0ycm4")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_lj0mh")

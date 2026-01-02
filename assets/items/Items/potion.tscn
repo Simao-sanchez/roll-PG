@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://ca4dhhjlsl8gj"]
+
+[ext_resource type="Script" uid="uid://cse8leqh4x446" path="res://assets/items/Items/potion.gd" id="1_aferg"]
+[ext_resource type="Texture2D" uid="uid://b4o5i36xh1xlp" path="res://sprites_objets/potion.png" id="2_kfbfs"]
+
+[node name="Potion" type="Node2D"]
+script = ExtResource("1_aferg")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_kfbfs")

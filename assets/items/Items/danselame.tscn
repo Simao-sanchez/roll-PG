@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://bqw6ajxrw7isd"]
+
+[ext_resource type="Script" uid="uid://brur4b1istbtc" path="res://assets/items/Items/danselame.gd" id="1_krdke"]
+[ext_resource type="Texture2D" uid="uid://dlw8mjvd16sph" path="res://sprites_objets/danselame.png" id="2_x6yvp"]
+
+[node name="DanseLame" type="Node2D"]
+script = ExtResource("1_krdke")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_x6yvp")

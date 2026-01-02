@@ -1,0 +1,23 @@
+[gd_scene load_steps=3 format=3 uid="uid://chfnj68wbtgg2"]
+
+[ext_resource type="Script" uid="uid://caib5pthlgof1" path="res://scripts/ui/menu.gd" id="1_5yleq"]
+[ext_resource type="Texture2D" uid="uid://b4d7ibhrm6uhs" path="res://assets/ui/sprite_menu.jpg" id="1_uubjt"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_5yleq")
+
+[node name="JouerButton" type="Button" parent="."]
+z_index = 2
+offset_left = 763.0
+offset_top = 667.0
+offset_right = 1062.0
+offset_bottom = 778.0
+theme_override_font_sizes/font_size = 60
+text = "Jouer"
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(947.53705, 622.74994)
+scale = Vector2(1.1843288, 1.150463)
+texture = ExtResource("1_uubjt")
+
+[connection signal="pressed" from="JouerButton" to="." method="_on_jouer_button_pressed"]
