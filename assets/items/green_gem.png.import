@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cgbchb6k3nw2a"
-path="res://.godot/imported/coffre.png-5896259552b670072a89d8514f9dd375.ctex"
+uid="uid://c4iecjfb7cg6p"
+path="res://.godot/imported/green_gem.png-e7d3c60ffd7870d20d5120aa03ea9616.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites_objets/coffre.png"
-dest_files=["res://.godot/imported/coffre.png-5896259552b670072a89d8514f9dd375.ctex"]
+source_file="res://assets/items/green_gem.png"
+dest_files=["res://.godot/imported/green_gem.png-e7d3c60ffd7870d20d5120aa03ea9616.ctex"]
 
 [params]
 

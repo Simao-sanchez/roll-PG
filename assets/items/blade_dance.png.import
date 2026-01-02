@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://cnkn5b3p2vf27"
-path="res://.godot/imported/bouclier.png-f0ff61917e99b37574607996021be709.ctex"
+uid="uid://dlw8mjvd16sph"
+path="res://.godot/imported/blade_dance.png-8884b7f5a155b82472e8f142b598f869.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites_objets/bouclier.png"
-dest_files=["res://.godot/imported/bouclier.png-f0ff61917e99b37574607996021be709.ctex"]
+source_file="res://assets/items/blade_dance.png"
+dest_files=["res://.godot/imported/blade_dance.png-8884b7f5a155b82472e8f142b598f869.ctex"]
 
 [params]
 

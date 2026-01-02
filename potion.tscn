@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://d4hr7go44a0qt"]
+
+[ext_resource type="Texture2D" uid="uid://b4o5i36xh1xlp" path="res://assets/items/potion.png" id="1_bcips"]
+
+[sub_resource type="GDScript" id="GDScript_174ht"]
+script/source = "extends Node2D
+
+func utiliser(joueur):
+	joueur.player_hp += 10
+	if joueur.player_hp > 100:
+		joueur.player_hp = 100
+	joueur.UpdatePlayer()
+	print(\"Potion utilisée : +10 PV au joueur. PV actuels : \", joueur.player_hp)
+	queue_free()
+"
+
+[node name="Potion" type="Node2D"]
+script = SubResource("GDScript_174ht")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_bcips")

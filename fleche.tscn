@@ -1,0 +1,25 @@
+[gd_scene load_steps=3 format=3 uid="uid://d3tjwgk83rjp3"]
+
+[ext_resource type="Texture2D" uid="uid://vx4f36y2m1rs" path="res://assets/items/arrow.png" id="1_xur2y"]
+
+[sub_resource type="GDScript" id="GDScript_4igv6"]
+script/source = "# res://Items/fleche.gd
+extends Node
+
+var nom = \"Flèche\"
+var effet = \"Inflige 1 dégât\"
+var triple = false
+
+func appliquer_effet(cible):
+	var degats = 1
+	if triple:
+		degats = 3
+	cible.hp -= degats
+	print(\"La flèche a infligé \", degats, \" dégâts à \", cible.name)
+"
+
+[node name="Fleche" type="Node2D"]
+script = SubResource("GDScript_4igv6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_xur2y")

@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://cud2lg313fhv7"]
+
+[ext_resource type="Texture2D" uid="uid://di3cwpyq0rguo" path="res://assets/items/key.png" id="1_up4cr"]
+
+[sub_resource type="GDScript" id="GDScript_p0yg6"]
+script/source = "extends Node2D
+
+@export var nom: String = \"Key\"
+@export var description: String = \"Permet d'ouvrir un coffre adjacent, se détruit dans l'opération\"
+
+func get_display_name() -> String:
+	return nom
+
+func get_description() -> String:
+	return description
+"
+
+[node name="key" type="Node2D"]
+script = SubResource("GDScript_p0yg6")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_up4cr")

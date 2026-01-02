@@ -1,19 +1,82 @@
 {
-	"sword": {
-		"name": "Épée",
-		"type": "attack",
-		"value": 5,
-		"rarity": "common",
-		"effects": ["double_if_pair"],
-		"sprite": "res://assets/powers/sword.png"
-	},
+  "sword": {
+	"name": "Épée",
+	"type": "attack",
+	"value": 5,
+	"rarity": "common",
+	"effects": [],
+	"sprite": "res://assets/items/sword.png"
+  },
 
-	"shield": {
-		"name": "Bouclier",
-		"type": "defense",
-		"value": 3,
-		"rarity": "common",
-		"effects": [],
-		"sprite": "res://assets/powers/shield.png"
-	}
+  "shield": {
+	"name": "Bouclier",
+	"type": "defense",
+	"value": 3,
+	"rarity": "common",
+	"effects": [],
+	"sprite": "res://assets/items/shield.png"
+  },
+
+  "arrow": {
+	"name": "Flèche",
+	"type": "attack",
+	"value": 1,
+	"rarity": "common",
+	"effects": [],
+	"sprite": "res://assets/items/arrow.png"
+  },
+
+  "key": {
+	"name": "Clé",
+	"type": "utility",
+	"value": 0,
+	"rarity": "uncommon",
+	"effects": ["opens_chest"],
+	"sprite": "res://assets/items/key.png"
+  },
+
+  "chest": {
+	"name": "Coffre",
+	"type": "utility",
+	"value": 0,
+	"rarity": "uncommon",
+	"effects": ["contains_reward"],
+	"sprite": "res://assets/items/chest.png"
+  },
+
+  "green_gem": {
+	"name": "Gemme verte",
+	"type": "special",
+	"value": 10,
+	"rarity": "rare",
+	"effects": [],
+	"sprite": "res://assets/items/green_gem.png"
+  },
+
+  "potion": {
+	"name": "Potion",
+	"type": "heal",
+	"value": 10,
+	"rarity": "common",
+	"effects": ["heal_player"],
+	"sprite": "res://assets/items/potion.png"
+  },
+
+  "apple": {
+	"name": "Pomme",
+	"type": "heal",
+	"value": 2,
+	"rarity": "common",
+	"effects": ["heal_player_small"],
+	"sprite": "res://assets/items/apple.png"
+  },
+
+  "blade_dance": {
+	"name": "Danse-lame",
+	"type": "attack",
+	"value": 0,
+	"rarity": "rare",
+	"effects": ["bonus_per_adjacent_sword"],
+	"sprite": "res://assets/items/blade_dance.png"
+  }
 }

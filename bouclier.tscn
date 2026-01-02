@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://cu1aktk72ejmr"]
+
+[ext_resource type="Texture2D" uid="uid://cnkn5b3p2vf27" path="res://assets/items/shield.png" id="1_iwfjm"]
+
+[sub_resource type="GDScript" id="GDScript_g6aam"]
+script/source = "# res://Items/bouclier.gd
+extends Node
+
+var nom = \"Bouclier\"
+var effet = \"Réduit les dégâts de 1\"
+
+func appliquer_effet(cible):
+	cible.hp += 1  # Exemple : soigne 1 point de vie
+	print(\"Le bouclier a réduit les dégâts pour \", cible.name)
+"
+
+[node name="Bouclier" type="Node2D"]
+script = SubResource("GDScript_g6aam")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_iwfjm")

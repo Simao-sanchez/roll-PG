@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://cil8whf0wlt0i"]
+
+[ext_resource type="Texture2D" uid="uid://samhc0ia4s66" path="res://sprites_objets/arc.png" id="1_0gy8f"]
+
+[sub_resource type="GDScript" id="GDScript_hjlpm"]
+script/source = "# res://Items/arc.gd
+extends Node
+
+var nom = \"Arc\"
+var effet = \"Triple les dégâts des flèches adjacentes\"
+
+func appliquer_effet(_cible):
+	print(\"L’arc n’inflige pas de dégâts seul.\")
+"
+
+[node name="Arc" type="Node2D"]
+script = SubResource("GDScript_hjlpm")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_0gy8f")

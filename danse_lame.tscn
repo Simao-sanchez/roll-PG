@@ -1,0 +1,28 @@
+[gd_scene load_steps=3 format=3 uid="uid://b50kd3rs0nj2"]
+
+[ext_resource type="Texture2D" uid="uid://dlw8mjvd16sph" path="res://assets/items/blade_dance.png" id="1_fih0o"]
+
+[sub_resource type="GDScript" id="GDScript_6pa7e"]
+script/source = "extends Node2D
+
+func get_degats_adjacents(items, index, epee_scene):
+	var degats = 0
+	var x = index % 5
+	var y = index / 5
+	for dx in range(-1, 2):
+		for dy in range(-1, 2):
+			if dx != 0 or dy != 0:
+				var nx = x + dx
+				var ny = y + dy
+				if nx >= 0 and nx < 5 and ny >= 0 and ny < 5:
+					var adj_index = nx + ny * 5
+					if adj_index < items.size() and items[adj_index] == epee_scene:
+						degats += 1
+	return degats
+"
+
+[node name="DanseLame" type="Node2D"]
+script = SubResource("GDScript_6pa7e")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_fih0o")

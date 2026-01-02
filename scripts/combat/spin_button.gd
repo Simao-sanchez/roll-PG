@@ -8,8 +8,6 @@ func _ready() -> void:
 		push_error("AudioStreamPlayer2D manquant sous %s!" % name)
 		return
 	
-	# Connexion signal si pas faite via éditeur
-	pressed.connect(_on_pressed)
 
 func _on_pressed() -> void:
 	# Jouer son (arrête si déjà en cours)

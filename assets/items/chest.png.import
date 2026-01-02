@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dqb5656s4o6f4"
-path="res://.godot/imported/epee.png-77c7e58bada9b77fa87f21af3c38d8af.ctex"
+uid="uid://cgbchb6k3nw2a"
+path="res://.godot/imported/chest.png-f90f7d2c3fd503848afaa1a787775ee9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites_objets/epee.png"
-dest_files=["res://.godot/imported/epee.png-77c7e58bada9b77fa87f21af3c38d8af.ctex"]
+source_file="res://assets/items/chest.png"
+dest_files=["res://.godot/imported/chest.png-f90f7d2c3fd503848afaa1a787775ee9.ctex"]
 
 [params]
 

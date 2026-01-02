@@ -1,0 +1,22 @@
+[gd_scene load_steps=3 format=3 uid="uid://bx47swcvr77ob"]
+
+[ext_resource type="Texture2D" uid="uid://cgbchb6k3nw2a" path="res://assets/items/chest.png" id="1_unsmk"]
+
+[sub_resource type="GDScript" id="GDScript_qqvds"]
+script/source = "extends Node2D
+
+@export var nom: String = \"Coffre\"
+@export var description: String = \"Contient un trésor, nécessite une clé pour s'ouvrir\"
+
+func get_display_name() -> String:
+	return nom
+
+func get_description() -> String:
+	return description
+"
+
+[node name="coffre" type="Node2D"]
+script = SubResource("GDScript_qqvds")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_unsmk")

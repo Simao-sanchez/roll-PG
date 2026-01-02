@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://vx4f36y2m1rs"
-path="res://.godot/imported/fleche.png-3ff1fe5682cf4ee1775ce477bcaae9c2.ctex"
+uid="uid://dqb5656s4o6f4"
+path="res://.godot/imported/sword.png-847a038487b8fb3480b77e98fb70eb52.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites_objets/fleche.png"
-dest_files=["res://.godot/imported/fleche.png-3ff1fe5682cf4ee1775ce477bcaae9c2.ctex"]
+source_file="res://assets/items/sword.png"
+dest_files=["res://.godot/imported/sword.png-847a038487b8fb3480b77e98fb70eb52.ctex"]
 
 [params]
 

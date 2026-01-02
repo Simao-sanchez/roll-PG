@@ -1,0 +1,20 @@
+[gd_scene load_steps=3 format=3 uid="uid://eyo80l277jnx"]
+
+[ext_resource type="Texture2D" uid="uid://dwans5p47mxr" path="res://assets/items/apple.png" id="1_nn6v7"]
+
+[sub_resource type="GDScript" id="GDScript_ydkjr"]
+script/source = "extends Node2D
+
+func utiliser(joueur):
+	joueur.player_hp += 2
+	if joueur.player_hp > 100:
+		joueur.player_hp = 100
+	joueur.UpdatePlayer()
+	queue_free()
+"
+
+[node name="Pomme" type="Node2D"]
+script = SubResource("GDScript_ydkjr")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("1_nn6v7")

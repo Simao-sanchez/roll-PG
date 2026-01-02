@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://c4iecjfb7cg6p"
-path="res://.godot/imported/gemme_verte.png-51e302be07fa6906c1b4a569c79b9cb8.ctex"
+uid="uid://vx4f36y2m1rs"
+path="res://.godot/imported/arrow.png-e8068b705b8a2e13d8ed2251b878fd51.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://sprites_objets/gemme_verte.png"
-dest_files=["res://.godot/imported/gemme_verte.png-51e302be07fa6906c1b4a569c79b9cb8.ctex"]
+source_file="res://assets/items/arrow.png"
+dest_files=["res://.godot/imported/arrow.png-e8068b705b8a2e13d8ed2251b878fd51.ctex"]
 
 [params]
 
