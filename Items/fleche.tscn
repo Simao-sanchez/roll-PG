@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://davk4vpq33qpa"]
+
+[ext_resource type="Script" uid="uid://bx7hw1j8w1v84" path="res://Items/fleche.gd" id="1_db1nn"]
+[ext_resource type="Texture2D" uid="uid://vx4f36y2m1rs" path="res://sprites_objets/fleche.png" id="2_a3xgt"]
+
+[node name="Fleche" type="Node2D"]
+script = ExtResource("1_db1nn")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_a3xgt")

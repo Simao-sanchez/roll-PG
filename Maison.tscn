@@ -1,0 +1,49 @@
+[gd_scene load_steps=5 format=3 uid="uid://co1d2ors1fddi"]
+
+[ext_resource type="Script" uid="uid://cb4q0g4ucm5fc" path="res://maison.gd" id="1_3h7iy"]
+[ext_resource type="Texture2D" uid="uid://bnd1vf7if5tx" path="res://Maison/fond/fond_maison.png" id="2_s4y2w"]
+[ext_resource type="Texture2D" uid="uid://c64s0yqdcls1v" path="res://Sprites_player/idle/player-idle-1.png" id="3_s4y2w"]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_s4y2w"]
+size = Vector2(148, 158)
+
+[node name="Maison" type="Node2D"]
+script = ExtResource("1_3h7iy")
+
+[node name="Fond" type="Sprite2D" parent="."]
+position = Vector2(954, 489)
+scale = Vector2(1.0122069, 1.0122069)
+texture = ExtResource("2_s4y2w")
+
+[node name="Foxy" type="Area2D" parent="."]
+
+[node name="Sprite2D" type="Sprite2D" parent="Foxy"]
+position = Vector2(974, 641)
+scale = Vector2(6.0156264, 6.0156264)
+texture = ExtResource("3_s4y2w")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Foxy"]
+position = Vector2(969, 668)
+shape = SubResource("RectangleShape2D_s4y2w")
+
+[node name="UI" type="CanvasLayer" parent="."]
+
+[node name="Label" type="Label" parent="UI"]
+offset_left = 518.0
+offset_top = 851.0
+offset_right = 639.0
+offset_bottom = 913.0
+theme_override_colors/font_color = Color(0.051970966, 0.05197096, 0.05197095, 1)
+theme_override_font_sizes/font_size = 30
+text = "RETOUR"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="BoutonRetour" type="Button" parent="UI"]
+offset_left = 504.0
+offset_top = 855.0
+offset_right = 662.0
+offset_bottom = 925.0
+
+[connection signal="input_event" from="Foxy" to="." method="_on_foxy_input_event"]
+[connection signal="pressed" from="UI/BoutonRetour" to="." method="_on_bouton_retour_pressed"]

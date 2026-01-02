@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://cncbdqg6xe26h"]
+
+[ext_resource type="Script" uid="uid://c370365x6gplo" path="res://Items/coffre.gd" id="1_c0cog"]
+[ext_resource type="Texture2D" uid="uid://cgbchb6k3nw2a" path="res://sprites_objets/coffre.png" id="2_orto7"]
+
+[node name="coffre" type="Node2D"]
+script = ExtResource("1_c0cog")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_orto7")

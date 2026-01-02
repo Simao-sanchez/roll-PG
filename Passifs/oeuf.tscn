@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://xgd77amdujde"]
+
+[ext_resource type="Script" uid="uid://bgvpybtqjvo1o" path="res://Passifs/oeuf.gd" id="1_7f2rf"]
+[ext_resource type="Texture2D" uid="uid://ba1y6jccjj2xc" path="res://sprite_passifs/oeuf.png" id="2_sbvri"]
+
+[node name="Oeuf" type="Node2D"]
+script = ExtResource("1_7f2rf")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_sbvri")

@@ -1,0 +1,10 @@
+[gd_scene load_steps=3 format=3 uid="uid://o7r6nvqjlbng"]
+
+[ext_resource type="Script" uid="uid://d3qr4107nlw2j" path="res://Items/gemme_verte.gd" id="1_dykmd"]
+[ext_resource type="Texture2D" uid="uid://c4iecjfb7cg6p" path="res://sprites_objets/gemme_verte.png" id="2_rtwcn"]
+
+[node name="gemme_verte" type="Node2D"]
+script = ExtResource("1_dykmd")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+texture = ExtResource("2_rtwcn")
