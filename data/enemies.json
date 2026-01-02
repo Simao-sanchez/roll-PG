@@ -1,15 +1,18 @@
 {
-	"slime": {
-		"name": "Slime",
-		"hp": 10,
-		"attack": 3,
-		"sprite": "res://assets/enemies/slime.png"
-	},
-
-	"goblin": {
-		"name": "Gobelin",
-		"hp": 15,
-		"attack": 5,
-		"sprite": "res://assets/enemies/goblin.png"
-	}
+	"ennemis": [
+		{
+			"id": "slime",
+			"nom": "Slime",
+			"hp": 10,
+			"attack": 3,
+			"sprite": "res://assets/enemies/slime.png"
+		},
+		{
+			"id": "goblin",
+			"nom": "Gobelin",
+			"hp": 15,
+			"attack": 5,
+			"sprite": "res://assets/enemies/goblin.png"
+		}
+	]
 }

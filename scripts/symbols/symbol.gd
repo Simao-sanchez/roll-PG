@@ -2,13 +2,15 @@ extends Node2D
 
 var data: Dictionary = {}
 
-# Appelée juste après l'instanciation du symbole
+# Référence vers les données du slot machine
+@onready var symbols_data = preload("res://data/symbols.json").symbols
+
 func setup(symbol_id: String) -> void:
-	if not Database.symbols.has(symbol_id):
+	if not symbols_data.has(symbol_id):
 		push_error("Symbol ID inconnu : " + symbol_id)
 		return
 
-	data = Database.symbols[symbol_id]
+	data = symbols_data[symbol_id]
 
 	# Chargement du sprite
 	if data.has("sprite"):
@@ -24,6 +26,5 @@ func setup(symbol_id: String) -> void:
 	else:
 		$Label.text = ""
 
-# Permet au slot machine de récupérer la texture finale
 func get_texture() -> Texture2D:
 	return $Sprite2D.texture
