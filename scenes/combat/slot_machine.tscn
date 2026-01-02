@@ -152,10 +152,10 @@ offset_right = 40.0
 offset_bottom = 40.0
 
 [node name="Container" type="GridContainer" parent="."]
-offset_left = 253.0
-offset_top = 330.0
-offset_right = 1912.9998
-offset_bottom = 504.0
+offset_left = 265.0
+offset_top = -132.0
+offset_right = 2094.9998
+offset_bottom = 1051.7499
 scale = Vector2(0.8, 0.8)
 columns = 5
 
@@ -380,14 +380,6 @@ horizontal_alignment = 1
 vertical_alignment = 1
 autowrap_trim_flags = 0
 
-[node name="DamageLabel" type="Label" parent="CombatPanel/SpritesContainer/PlayerSprite"]
-visible = false
-offset_left = -39.35645
-offset_top = 2.6802254
-offset_right = -38.35645
-offset_bottom = 30.680225
-theme_override_font_sizes/font_size = 20
-
 [node name="EnemySprite" type="Sprite2D" parent="CombatPanel/SpritesContainer"]
 position = Vector2(806, 125)
 scale = Vector2(0.48087093, 0.42363948)
@@ -436,6 +428,11 @@ theme_override_font_sizes/font_size = 92
 text = "test"
 horizontal_alignment = 1
 vertical_alignment = 1
+
+[node name="DamageLabel" type="Label" parent="CombatPanel/SpritesContainer"]
+visible = false
+layout_mode = 2
+theme_override_font_sizes/font_size = 20
 
 [node name="ChoixPanel" type="Panel" parent="."]
 visible = false
@@ -602,4 +599,4 @@ offset_bottom = 23.0
 wait_time = 0.3
 one_shot = true
 
-[connection signal="pressed" from="SpinButton" to="SpinButton" method="_on_pressed"]
+[connection signal="pressed" from="SpinButton" to="." method="_on_spin_button_pressed"]
