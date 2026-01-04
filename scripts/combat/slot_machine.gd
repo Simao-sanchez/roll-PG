@@ -11,6 +11,7 @@ var spin_count = 0
 var choix_en_cours = false
 var pending_enemy_damage = 0
 var hovered_slot_index = -1
+var draft_choices = []
 
 var pouvoir_boutons = []
 var pouvoir_disponible = [true, true, true, true]
@@ -25,6 +26,13 @@ var ennemis_liste = []
 var dernier_ennemi = ""
 var ennemis_vaincus = 0
 
+# --- Variables pour les pouvoirs ---
+var powers_data = {}          # Contenu de powers.json
+var last_damage_dealt = 0     # Pour Lifelink
+var arrow_boost = 1.0         # Multiplicateur flèches (si tu veux l’utiliser plus tard)
+var shield_factor = 1.0       # Réduction dégâts ennemis (si tu veux l’utiliser plus tard)
+var bonus_damage = 0          # Dégâts bonus (si tu veux l’utiliser plus tard)
+
 # ---------------------------------------------------------
 #                REFERENCES AUX NOEUDS
 # ---------------------------------------------------------
@@ -34,7 +42,6 @@ var ennemis_vaincus = 0
 @onready var choix_background = $ChoixPanel
 @onready var tooltip_label = $TooltipLabel
 @onready var tooltip_timer = $TooltipTimer
-
 @onready var pouvoir1 = $Pouvoir1
 @onready var pouvoir2 = $Pouvoir2
 @onready var pouvoir3 = $Pouvoir3
@@ -50,19 +57,77 @@ var ennemis_vaincus = 0
 # ---------------------------------------------------------
 
 func _ready():
-	# Backpack de départ avec 25 symboles
-	backpack = [
-		"sword","sword","sword","sword","sword",
-		"arrow","arrow","arrow","arrow","arrow",
-		"key","key","key","key","key",
-		"chest","chest","chest","chest","chest",
-		"blade_dance","blade_dance","blade_dance","blade_dance","blade_dance"
-	]
+    # ---------------------------------------------------------
+    # Chargement des pouvoirs depuis powers.json
+    # ---------------------------------------------------------
+	var file_p = FileAccess.open("res://data/powers.json", FileAccess.READ)
+	if file_p:
+		var content_p = file_p.get_as_text()
+		var parsed_p = JSON.parse_string(content_p)
+		if typeof(parsed_p) == TYPE_DICTIONARY:
+			powers_data = parsed_p
+		else:
+			push_error("ERREUR : powers.json mal formé")
+	else:
+		push_error("ERREUR : impossible d'ouvrir powers.json")
 
-	# Le reste de ton _ready()
-	
+    # ---------------------------------------------------------
+    # 1. Initialisation du backpack
+    # ---------------------------------------------------------
+	backpack = []
+	for i in range(15):
+		backpack.append("empty")
+	for i in range(5):
+		backpack.append("sword")
+	backpack.append("chest")
+	for i in range(4):
+		backpack.append("arrow")
 
-	# Charger les ennemis depuis enemies.json
+    # ---------------------------------------------------------
+    # 2. Connexions des boutons du sac
+    # ---------------------------------------------------------
+	$BackpackButton.pressed.connect(show_backpack)
+	$BackpackPanel/CloseButton.pressed.connect(func():
+		$BackpackPanel.visible = false
+		$BackpackOverlay.visible = false
+	)
+	$BackpackPanel/Grid.add_theme_constant_override("h_separation", 70)
+	$BackpackPanel/Grid.add_theme_constant_override("v_separation", 70)
+
+    # ---------------------------------------------------------
+    # 3. Initialisation du système de draft
+    # ---------------------------------------------------------
+	choix_background.visible = false
+	choix_background.get_node("Bouton1").pressed.connect(
+		_on_draft_button_pressed.bind(choix_background.get_node("Bouton1"))
+	)
+	choix_background.get_node("Bouton2").pressed.connect(
+		_on_draft_button_pressed.bind(choix_background.get_node("Bouton2"))
+	)
+	choix_background.get_node("Bouton3").pressed.connect(
+		_on_draft_button_pressed.bind(choix_background.get_node("Bouton3"))
+	)
+
+    # ---------------------------------------------------------
+    # 4. Connexions des pouvoirs
+    # ---------------------------------------------------------
+	pouvoir1.pressed.connect(func(): on_power_pressed(1))
+	pouvoir2.pressed.connect(func(): on_power_pressed(2))
+	pouvoir3.pressed.connect(func(): on_power_pressed(3))
+	pouvoir4.pressed.connect(func(): on_power_pressed(4))
+	pouvoir1.mouse_entered.connect(func(): show_power_tooltip(1))
+	pouvoir2.mouse_entered.connect(func(): show_power_tooltip(2))
+	pouvoir3.mouse_entered.connect(func(): show_power_tooltip(3))
+	pouvoir4.mouse_entered.connect(func(): show_power_tooltip(4))
+
+	pouvoir1.mouse_exited.connect(hide_power_tooltip)
+	pouvoir2.mouse_exited.connect(hide_power_tooltip)
+	pouvoir3.mouse_exited.connect(hide_power_tooltip)
+	pouvoir4.mouse_exited.connect(hide_power_tooltip)
+
+    # ---------------------------------------------------------
+    # 5. Chargement des ennemis
+    # ---------------------------------------------------------
 	var file = FileAccess.open("res://data/enemies.json", FileAccess.READ)
 	if file:
 		var content = file.get_as_text()
@@ -76,7 +141,9 @@ func _ready():
 		push_error("ERREUR : impossible d'ouvrir enemies.json")
 		ennemis_liste = []
 
-	# Créer la grille 5x5
+    # ---------------------------------------------------------
+    # 6. Création dynamique de la grille 5x5
+    # ---------------------------------------------------------
 	for i in range(25):
 		var tex = TextureRect.new()
 		tex.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
@@ -92,8 +159,14 @@ func _ready():
 		grid_container.add_child(tex)
 		texture_rects.append(tex)
 
+    # ---------------------------------------------------------
+    # 7. Initialisation des boutons de pouvoirs
+    # ---------------------------------------------------------
 	pouvoir_boutons = [pouvoir1, pouvoir2, pouvoir3, pouvoir4]
 
+    # ---------------------------------------------------------
+    # 8. Mise à jour initiale de l'UI combat + inventaire
+    # ---------------------------------------------------------
 	UpdateEnemy()
 	UpdatePlayer()
 	UpdateInventory()
@@ -124,14 +197,104 @@ func UpdateEnemy():
 	$CombatPanel/SpritesContainer/EnemySprite/EnemyName.text = e["nom"]
 	$CombatPanel/SpritesContainer/EnemySprite/EnemyHPLabel.text = str(enemy["hp"]) + "/" + str(enemy_max_hp)
 
+
 func UpdatePlayer():
 	var hb = $CombatPanel/SpritesContainer/PlayerSprite/PlayerHPBar
 	hb.max_value = 100
 	hb.value = player_hp
 	hb.queue_redraw()
-
 	var hl = $CombatPanel/SpritesContainer/PlayerSprite/PlayerHPLabel
 	hl.text = str(player_hp) + "/100"
+
+func create_tooltip_for(id):
+	var data = Database.symbols[id]
+	var name = data.get("name", id)
+	var rarity = data.get("rarity", "common")
+	var effects = data.get("effects", [])
+
+	var text = name + "\n"
+	text += "Rareté : " + rarity.capitalize() + "\n"
+
+	if effects.size() > 0:
+		text += "Effet : " + str(effects[0])
+
+	return text
+
+func get_backpack_counts():
+	var counts = {}
+	for id in backpack:
+		if not counts.has(id):
+			counts[id] = 1
+		else:
+			counts[id] += 1
+	return counts
+
+func show_backpack():
+	var panel = $BackpackPanel
+	var grid = panel.get_node("Grid")
+
+	panel.visible = true
+	$BackpackOverlay.visible = true
+	panel.move_to_front()
+
+    # Nettoyer la grille
+	for c in grid.get_children():
+		c.queue_free()
+
+    # Récupérer les objets groupés
+	var counts = get_backpack_counts()
+
+    # Ne pas afficher les "empty"
+	counts.erase("empty")
+
+    # Trier les IDs par rareté
+	var ids = counts.keys()
+	ids = sort_ids_by_rarity(ids)
+
+	for id in ids:
+		var data = Database.symbols[id]
+
+        # Conteneur pour un item
+		var item_box = Control.new()
+		item_box.custom_minimum_size = Vector2(72, 72)
+		item_box.tooltip_text = create_tooltip_for(id)
+
+        # Animation de survol
+		item_box.mouse_entered.connect(func():
+			item_box.scale = Vector2(1.1, 1.1)
+		)
+		item_box.mouse_exited.connect(func():
+			item_box.scale = Vector2(1, 1)
+		)
+
+        # Image
+		var tex = TextureRect.new()
+		var s = SymbolScene.instantiate()
+		s.setup(id)
+		tex.texture = s.get_texture()
+		s.queue_free()
+
+		tex.expand_mode = TextureRect.EXPAND_FIT_WIDTH_PROPORTIONAL
+		tex.stretch_mode = TextureRect.STRETCH_KEEP
+		tex.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tex.size_flags_vertical = Control.SIZE_EXPAND_FILL
+
+		item_box.add_child(tex)
+
+        # Compteur (ex: ×5)
+		var label = Label.new()
+		label.text = "x" + str(counts[id])
+		label.add_theme_color_override("font_color", Color(1,1,1))
+		label.position = Vector2(40, 40)
+		label.z_index = 10
+
+		item_box.add_child(label)
+
+		grid.add_child(item_box)
+
+    # Mettre à jour le total (sans les empty)
+	var total_real_items = backpack.size() - backpack.count("empty")
+	$BackpackPanel/TotalLabel.text = "Total : " + str(total_real_items)
 
 func UpdateInventory():
 	for i in range(3):
@@ -158,6 +321,21 @@ func UpdateInventory():
 			s.queue_free()
 		else:
 			b.visible = false
+
+
+func add_to_backpack(id):
+    # Cherche un "empty"
+	var empty_index = backpack.find("empty")
+
+    # S'il y en a un → on le remplace
+	if empty_index != -1:
+		backpack[empty_index] = id
+	else:
+        # Sinon on ajoute normalement
+		backpack.append(id)
+
+
+	UpdateInventory()
 
 # ---------------------------------------------------------
 #                SPIN
@@ -195,6 +373,24 @@ func _on_spin_button_pressed():
 
 	$CombatPanel/SpritesContainer/PlayerSprite.play("attack")
 	$CombatPanel/SpritesContainer/PlayerSprite.animation_finished.connect(_on_player_attack_finished, CONNECT_ONE_SHOT)
+func sort_ids_by_rarity(ids):
+	var rarity_order = {
+		"legendary": 0,
+		"epic": 1,
+		"rare": 2,
+		"uncommon": 3,
+		"common": 4,
+		"none": 5
+	}
+
+	ids.sort_custom(func(a, b):
+		var ra = Database.symbols[a].get("rarity", "common")
+		var rb = Database.symbols[b].get("rarity", "common")
+		return rarity_order[ra] < rarity_order[rb]
+	)
+
+	return ids
+
 
 func spin_reels_column_by_column():
 	var cols = 5
@@ -316,6 +512,7 @@ func ApplyDamage(local_items, local_tex):
 	# --- Total dégâts ---
 	var e_d = e_o * 5 + e_c * 50
 	deg = e_d + f + bd
+	last_damage_dealt = deg
 
 	# --- Mise à jour HP ennemi ---
 	var rest = enemy["hp"] - deg
@@ -356,14 +553,102 @@ func ApplyDamage(local_items, local_tex):
 	# --- Ennemi mort ? ---
 	if rest == 0:
 		ennemis_vaincus += 1
-		UpdateEnemy()
-		roll_enemy_damage()
-	else:
-		roll_enemy_damage()
+		start_draft()
+		return
+
+	# Sinon, l’ennemi attaque normalement
+	roll_enemy_damage()
+
+
+func apply_fireball(amount):
+	enemy["hp"] = max(enemy["hp"] - amount, 0)
+	UpdateEnemy()
+
+func apply_heal(amount):
+	player_hp = min(player_hp + amount, 100)
+	UpdatePlayer()
+
+func apply_lifelink():
+	player_hp = min(player_hp + last_damage_dealt, 100)
+	UpdatePlayer()
 
 # ---------------------------------------------------------
 #                ADJACENCE + KEY/chest
 # ---------------------------------------------------------
+func on_power_pressed(index):
+	if not pouvoir_disponible[index - 1]:
+		return
+
+	var power_id = "power" + str(index)
+	var data = powers_data[power_id]
+
+	match data["effect"]:
+		"fireball":
+			apply_fireball(data["value"])
+
+		"heal":
+			apply_heal(data["value"])
+
+		"lifelink":
+			apply_lifelink()
+
+		"none":
+			print("Pouvoir sans effet")
+
+    # Désactiver le pouvoir
+	pouvoir_disponible[index - 1] = false
+	pouvoir_boutons[index - 1].disabled = true
+	pouvoir_boutons[index - 1].modulate = Color(0.5, 0.5, 0.5, 1)
+
+    # Reset du compteur pour le cooldown
+	spin_compteur_pouvoir[index - 1] = 0
+
+
+func show_power_tooltip(index):
+	var power_id = "power" + str(index)
+	var data = powers_data[power_id]
+
+	var name = data["name"]
+	var effect = data["effect"]
+	var cooldown = data["cooldown"]
+
+	var text = name + "\n"
+
+	match effect:
+		"fireball":
+			text += "Inflige " + str(data["value"]) + " dégâts.\n"
+
+		"heal":
+			text += "Soigne " + str(data["value"]) + " PV.\n"
+
+		"lifelink":
+			text += "Soigne du montant des dégâts infligés au dernier tour.\n"
+			text += "Actuellement : +" + str(last_damage_dealt) + " PV\n"
+
+		"none":
+			text += "Aucun effet.\n"
+
+	text += "Recharge : " + str(cooldown) + " tours"
+
+	tooltip_label.text = text
+	tooltip_label.visible = true
+	tooltip_label.global_position = get_viewport().get_mouse_position() + Vector2(16, 16)
+
+func hide_power_tooltip():
+	tooltip_label.visible = false
+
+func apply_bonus_damage(amount):
+    # On stocke un bonus qui sera appliqué au prochain spin
+	pending_enemy_damage += amount
+
+func apply_arrow_boost(multiplier):
+    # On active un flag pour le prochain spin
+	arrow_boost = multiplier
+
+func apply_shield(factor):
+    # Réduction des dégâts ennemis
+	shield_factor = factor
+
 
 func get_adjacent_indices(i):
 	var r = []
@@ -471,3 +756,137 @@ func _on_backpack_button_pressed():
 
 func _on_close_button_pressed():
 	$InventoryPanel.visible = false
+func start_draft():
+	choix_en_cours = true
+	choix_background.visible = true
+	choix_background.move_to_front()
+
+	draft_choices.clear()
+
+	# 1. Déterminer la rareté du draft
+	var rarity = pick_rarity()
+	print("Draft rarity =", rarity)
+
+	# 2. Récupérer tous les symboles de cette rareté
+	var pool = get_symbols_by_rarity(rarity)
+
+	if pool.size() == 0:
+		push_error("Aucun symbole trouvé pour la rareté : " + rarity)
+		return
+
+	# 3. Tirer 3 objets différents
+	draft_choices = pick_three_unique(pool)
+
+	# 4. Remplir les 3 boutons
+	for i in range(draft_choices.size()):
+		var id = draft_choices[i]
+		var data = Database.symbols[id]
+
+		var bouton = choix_background.get_node("Bouton" + str(i+1))
+		bouton.set_meta("id", id)
+
+		# Nom
+		bouton.get_node("NomLabel").text = data.get("name", id)
+
+		# Effet
+		var eff = data.get("effects", [])
+		bouton.get_node("EffetLabel").text = str(eff[0]) if eff.size() > 0 else ""
+
+		# Image
+		var s = SymbolScene.instantiate()
+		s.setup(id)
+		bouton.get_node("ImageTextureRect").texture = s.get_texture()
+		s.queue_free()
+
+		# Couleur selon rareté de l’item
+		var item_rarity = data.get("rarity", "common")
+		bouton.modulate = get_rarity_color(item_rarity)
+
+		bouton.disabled = false
+		bouton.visible = true
+
+func get_symbols_by_rarity(rarity):
+	var list = []
+	for id in Database.symbols.keys():
+		var data = Database.symbols[id]
+		if data.get("rarity", "common") == rarity:
+			list.append(id)
+	return list
+
+func get_rarity_color(rarity):
+	match rarity:
+		"common":
+			return Color(1, 1, 1, 1) # blanc / normal
+		"uncommon":
+			return Color(0.2, 1, 0.2, 1) # vert
+		"rare":
+			return Color(0.2, 0.4, 1, 1) # bleu
+		"epic":
+			return Color(0.6, 0.2, 1, 1) # violet
+		"legendary":
+			return Color(1, 0.5, 0.1, 1) # orange/rouge
+		_:
+			return Color(1, 1, 1, 1)
+
+func pick_three_unique(list):
+	list.shuffle()
+	return list.slice(0, min(3, list.size()))
+
+	# Récupérer tous les IDs d'objets depuis Database
+var all_ids = Database.symbols.keys()
+func pick_rarity():
+	var r = randf() * 100.0
+
+	if r < 1.0:
+		return "legendary"
+	elif r < 1.0 + 5.0:
+		return "epic"
+	elif r < 1.0 + 5.0 + 15.0:
+		return "rare"
+	elif r < 1.0 + 5.0 + 15.0 + 30.0:
+		return "uncommon"
+	else:
+		return "common"
+
+	# Tirer 3 objets aléatoires
+	for i in range(3):
+		draft_choices.append(all_ids[randi() % all_ids.size()])
+
+	# Remplir les 3 boutons
+	for i in range(3):
+		var id = draft_choices[i]
+		var data = Database.symbols[id]
+
+		var bouton = choix_background.get_node("Bouton" + str(i+1))
+		bouton.set_meta("id", id)
+
+		bouton.get_node("NomLabel").text = data.get("name", id)
+
+		var eff = data.get("effects", [])
+		bouton.get_node("EffetLabel").text = str(eff[0]) if eff.size() > 0 else ""
+
+		var s = SymbolScene.instantiate()
+		s.setup(id)
+		bouton.get_node("ImageTextureRect").texture = s.get_texture()
+		s.queue_free()
+
+		bouton.disabled = false
+		bouton.visible = true
+
+func _on_draft_button_pressed(button):
+	var id = button.get_meta("id")
+	if id == null:
+		return
+
+	# Ajouter au backpack
+	add_to_backpack(id)
+
+
+	# Fermer le panel
+	choix_background.visible = false
+	choix_en_cours = false
+
+	UpdateInventory()
+
+	# Charger un nouvel ennemi
+	UpdateEnemy()

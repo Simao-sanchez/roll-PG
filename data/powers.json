@@ -1,0 +1,26 @@
+{
+    "power1": {
+        "name": "Boule de Feu",
+        "effect": "fireball",
+        "value": 20,
+        "cooldown": 3
+    },
+    "power2": {
+        "name": "Soin",
+        "effect": "heal",
+        "value": 10,
+        "cooldown": 3
+    },
+    "power3": {
+        "name": "Lifelink",
+        "effect": "lifelink",
+        "value": 1,
+        "cooldown": 3
+    },
+    "power4": {
+        "name": "Sans Nom",
+        "effect": "none",
+        "value": 0,
+        "cooldown": 3
+    }
+}

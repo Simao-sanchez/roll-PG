@@ -4,7 +4,7 @@
 	"type": "attack",
 	"value": 5,
 	"rarity": "common",
-	"effects": [],
+	"effects": ["Inflige 1 dégat"],
 	"sprite": "res://assets/items/sword.png"
   },
 
@@ -13,7 +13,7 @@
 	"type": "defense",
 	"value": 3,
 	"rarity": "common",
-	"effects": [],
+	"effects": ["Vous protege"],
 	"sprite": "res://assets/items/shield.png"
   },
 
@@ -22,7 +22,7 @@
 	"type": "attack",
 	"value": 1,
 	"rarity": "common",
-	"effects": [],
+	"effects": ["inflige 1 dégat"],
 	"sprite": "res://assets/items/arrow.png"
   },
 
@@ -31,7 +31,7 @@
 	"type": "utility",
 	"value": 0,
 	"rarity": "uncommon",
-	"effects": ["opens_chest"],
+	"effects": ["ouvre un coffre"],
 	"sprite": "res://assets/items/key.png"
   },
 
@@ -40,7 +40,7 @@
 	"type": "utility",
 	"value": 0,
 	"rarity": "uncommon",
-	"effects": ["contains_reward"],
+	"effects": ["nécessite une clé pour l'ouvrir"],
 	"sprite": "res://assets/items/chest.png"
   },
 
@@ -49,7 +49,15 @@
 	"type": "special",
 	"value": 10,
 	"rarity": "rare",
-	"effects": [],
+	"effects": ["Une gemme verte rare"],
+	"sprite": "res://assets/items/green_gem.png"
+  },
+  "empty": {
+	"name": "Vide",
+	"type": "none",
+	"value": 0,
+	"rarity": "none",
+	"effects": ["Du vide"],
 	"sprite": "res://assets/items/green_gem.png"
   },
 
@@ -57,8 +65,8 @@
 	"name": "Potion",
 	"type": "heal",
 	"value": 10,
-	"rarity": "common",
-	"effects": ["heal_player"],
+	"rarity": "uncommon",
+	"effects": ["Vous soigne de x PV"],
 	"sprite": "res://assets/items/potion.png"
   },
 
@@ -66,8 +74,56 @@
 	"name": "Pomme",
 	"type": "heal",
 	"value": 2,
-	"rarity": "common",
+	"rarity": "rare",
 	"effects": ["heal_player_small"],
+	"sprite": "res://assets/items/apple.png"
+  },
+  "épique test": {
+	"name": "epique test",
+	"type": "heal",
+	"value": 2,
+	"rarity": "epic",
+	"effects": ["épique"],
+	"sprite": "res://assets/items/apple.png"
+  },
+  "épique test2": {
+	"name": "epique test2",
+	"type": "heal",
+	"value": 2,
+	"rarity": "epic",
+	"effects": ["épique 2"],
+	"sprite": "res://assets/items/apple.png"
+  },
+  "épique test 3": {
+	"name": "epique test 3",
+	"type": "heal",
+	"value": 2,
+	"rarity": "epic",
+	"effects": ["épique 3"],
+	"sprite": "res://assets/items/apple.png"
+  },
+  "legendairetest": {
+	"name": "legendaire test",
+	"type": "heal",
+	"value": 2,
+	"rarity": "legendary",
+	"effects": ["legendary1"],
+	"sprite": "res://assets/items/apple.png"
+  },
+  "legendary test 2": {
+	"name": "legendary 2",
+	"type": "heal",
+	"value": 2,
+	"rarity": "legendary",
+	"effects": ["legendary 2"],
+	"sprite": "res://assets/items/apple.png"
+  },
+  "legendary 3": {
+	"name": "legendary 3",
+	"type": "heal",
+	"value": 2,
+	"rarity": "legendary",
+	"effects": ["legendary 3"],
 	"sprite": "res://assets/items/apple.png"
   },
 
